@@ -70,28 +70,20 @@ document.addEventListener('click', ({target}) => {
     currentOutput.innerHTML += target.innerHTML;
   }
   if (target.hasAttribute('data-operation')) {
-    let lastSymbal = currentOutput.innerHTML[currentOutput.innerHTML.length - 1];
-
-    if (lastSymbal === '+' || lastSymbal === '*' || lastSymbal === '/' || lastSymbal === '-') {
-        if (currentOutput.innerHTML.length !== 1) {
-          currentOutput.innerHTML = currentOutput.innerHTML.replace(lastSymbal, target.innerHTML);
-        }
-      } else {
-      if (currentOutput.innerHTML !== '') {
-        currentOutput.innerHTML += target.innerHTML;
-      }
-      if (target.innerHTML === '-') {
-        currentOutput.innerHTML += target.innerHTML;
-      }
+    if (!currentOutput.innerHTML.length && (target.innerHTML === '-')) {
+      currentOutput.innerHTML += target.innerHTML;
+    }
+    if (/(?<![0-9])\-[0-9]+\.[0-9]+|[0-9]+\.[0-9]+|[0-9]+|(?<![0-9])\-[0-9]+/.test(currentOutput.innerHTML)) {
+      currentOutput.innerHTML += ` ${target.innerHTML} `;
+      previousOutput.innerHTML += currentOutput.innerHTML;
+      currentOutput.innerHTML = '';
     }
   }
   if (target.hasAttribute('data-equals')) {
-    let lastSymbal = currentOutput.innerHTML[currentOutput.innerHTML.length - 1];
-    if (lastSymbal === '+' || lastSymbal === '*' || lastSymbal === '/' || lastSymbal === '-') {
-      currentOutput.innerHTML = currentOutput.innerHTML.slice(0, currentOutput.innerHTML.length - 1);
+    if (/[0-9]+/.test(currentOutput.innerHTML)) {
+      previousOutput.innerHTML += ` ${currentOutput.innerHTML}`;
+      currentOutput.innerHTML = expressionCalculator(previousOutput.innerHTML);
     }
-    previousOutput.innerHTML = currentOutput.innerHTML;
-    currentOutput.innerHTML = expressionCalculator(currentOutput.innerHTML);
   }
   if (target.hasAttribute('data-all-clear')) {
     previousOutput.innerHTML = '';
