@@ -83,6 +83,7 @@ document.addEventListener('click', ({target}) => {
     if (/[0-9]+/.test(currentOutput.innerHTML)) {
       previousOutput.innerHTML += ` ${currentOutput.innerHTML}`;
       currentOutput.innerHTML = expressionCalculator(previousOutput.innerHTML);
+      previousOutput.innerHTML = '';
     }
   }
   if (target.hasAttribute('data-all-clear')) {
