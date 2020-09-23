@@ -1,12 +1,12 @@
 function expressionCalculator(expr) {
 
   let exprNoSpace = expr.replace(/\s/g,'');
-  let regex = /\-[0-9]+\.[0-9]+|[0-9]+\.[0-9]+|[0-9]+|\-[0-9]+|\W/g; //   /[0-9]+.[0-9]+|\W/g;
+  let regex = /(?<![0-9])\-[0-9]+\.[0-9]+|[0-9]+\.[0-9]+|[0-9]+|(?<![0-9])\-[0-9]+|\W/g;
   let regexNum = /^-\d*\.?\d+$|[0-9]+/;
   let left = 0; let right = 0;
   let a = "TypeError: Division by zero.";
   let b = "ExpressionError: Brackets must be paired";
-  let array = exprNoSpace.match(regex);console.log(array);
+  let array = exprNoSpace.match(regex); console.log(array);
   for(let i = 0; i < array.length; i++)
   {
     if(array[i] === '('){left += 1;}
@@ -71,11 +71,16 @@ document.addEventListener('click', ({target}) => {
   }
   if (target.hasAttribute('data-operation')) {
     let lastSymbal = currentOutput.innerHTML[currentOutput.innerHTML.length - 1];
-    console.log('last: ', lastSymbal);
+
     if (lastSymbal === '+' || lastSymbal === '*' || lastSymbal === '/' || lastSymbal === '-') {
-      currentOutput.innerHTML = currentOutput.innerHTML.replace(lastSymbal, target.innerHTML);
-    } else {
+        if (currentOutput.innerHTML.length !== 1) {
+          currentOutput.innerHTML = currentOutput.innerHTML.replace(lastSymbal, target.innerHTML);
+        }
+      } else {
       if (currentOutput.innerHTML !== '') {
+        currentOutput.innerHTML += target.innerHTML;
+      }
+      if (target.innerHTML === '-') {
         currentOutput.innerHTML += target.innerHTML;
       }
     }
