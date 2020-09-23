@@ -1,12 +1,12 @@
 function expressionCalculator(expr) {
 
   let exprNoSpace = expr.replace(/\s/g,'');
-  let regex = /[0-9]+\.[0-9]+|[0-9]+|\W/g; //   /[0-9]+.[0-9]+|\W/g;
+  let regex = /\-[0-9]+\.[0-9]+|[0-9]+\.[0-9]+|[0-9]+|\-[0-9]+|\W/g; //   /[0-9]+.[0-9]+|\W/g;
   let regexNum = /^-\d*\.?\d+$|[0-9]+/;
   let left = 0; let right = 0;
   let a = "TypeError: Division by zero.";
   let b = "ExpressionError: Brackets must be paired";
-  let array = exprNoSpace.match(regex);
+  let array = exprNoSpace.match(regex);console.log(array);
   for(let i = 0; i < array.length; i++)
   {
     if(array[i] === '('){left += 1;}
@@ -66,10 +66,25 @@ const previousOutput = document.querySelector('[data-previous-output]');
 const currentOutput = document.querySelector('[data-current-output]');
 
 document.addEventListener('click', ({target}) => {
-  if (target.hasAttribute('data-number') || target.hasAttribute('data-operation')) {
+  if (target.hasAttribute('data-number')) {
     currentOutput.innerHTML += target.innerHTML;
   }
+  if (target.hasAttribute('data-operation')) {
+    let lastSymbal = currentOutput.innerHTML[currentOutput.innerHTML.length - 1];
+    console.log('last: ', lastSymbal);
+    if (lastSymbal === '+' || lastSymbal === '*' || lastSymbal === '/' || lastSymbal === '-') {
+      currentOutput.innerHTML = currentOutput.innerHTML.replace(lastSymbal, target.innerHTML);
+    } else {
+      if (currentOutput.innerHTML !== '') {
+        currentOutput.innerHTML += target.innerHTML;
+      }
+    }
+  }
   if (target.hasAttribute('data-equals')) {
+    let lastSymbal = currentOutput.innerHTML[currentOutput.innerHTML.length - 1];
+    if (lastSymbal === '+' || lastSymbal === '*' || lastSymbal === '/' || lastSymbal === '-') {
+      currentOutput.innerHTML = currentOutput.innerHTML.slice(0, currentOutput.innerHTML.length - 1);
+    }
     previousOutput.innerHTML = currentOutput.innerHTML;
     currentOutput.innerHTML = expressionCalculator(currentOutput.innerHTML);
   }
@@ -78,6 +93,7 @@ document.addEventListener('click', ({target}) => {
     currentOutput.innerHTML = '';
   }
   if (target.hasAttribute('data-delete') && currentOutput.innerHTML) {
-    currentOutput.innerHTML = currentOutput.innerHTML.slice(0, currentOutput.innerHTML.length - 1)
+    let result = currentOutput.innerHTML.slice(0, currentOutput.innerHTML.length - 1);
+    currentOutput.innerHTML = result;
   }
 })
